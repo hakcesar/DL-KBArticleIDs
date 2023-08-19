@@ -8,8 +8,7 @@ if (-not $isAdmin) {
     $credentials = Get-Credential 
 
     # Check if the provided credential have adminsitrative privileges
-    $isAdmin = $credentials.GetNetworkCredential().Password | ConvertTo-SecureString | `
-        (New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ($credentials.UserName, $_)).GetNetworkCredential().Password -match "S-1-5-32-544"
+     $isAdmin = [System.Security.Principal.WindowsPrincipal]::new($credentials).IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator)
 
     if (-not $isAdmin) {
         Write-Host "The provided credentials do not have administrative privileges."
