@@ -86,7 +86,7 @@ if ($availableUpdates.Count -eq 0) {
     if ($installChoice -eq "Y") {
         Write-Host "Installing KBArticleID(s)..."
         $KBArticleIDs | ForEach-Object {
-            Install-WindowsUpdate -KBArticleID $_
+            Install-WindowsUpdate -KBArticleID $_ -AcceptAll
             Write-Host "Installed KB$_"
         }
         Write-Host "KBArticleID(s) installed."
