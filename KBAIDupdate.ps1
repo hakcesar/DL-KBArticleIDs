@@ -35,7 +35,6 @@ Write-Host "Blog: https://hakcesar.com"
 Write-Host ""
 
 
-
 # Check if the user is running the script as administrator
 
 $isAdmin = ([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544"
@@ -48,12 +47,17 @@ if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 # Install or update the PSWindowsUpdate module
 Write-Host "Installing/Updating PSWindowsUpdate module and NuGet package provider..."
 Install-PackageProvider -Name NuGet -Force
+
+# Install the NuGet package provider
+Install-PackageProvider -Name NuGet -Force
 # NuGet is a package manager for software libraries used in various programming languages, 
 # including PowerShell. It allows you to easily discover, install, and manage libraries,
 # modules, and tools needed for development and automation. In this script, we're using the
 # NuGet package provider to manage the installation of the PSWindowsUpdate module.
 # Learn more about NuGet at: https://www.nuget.org/
 
+# Install or update the PSWindowsUpdate module
+Write-Host "Installing/Updating PSWindowsUpdate module..."
 Install-Module PSWindowsUpdate -Force
 Import-Module PSWindowsUpdate -Force
 # The PSWindowsUpdate module is a PowerShell module that provides cmdlets to interact
@@ -62,14 +66,8 @@ Import-Module PSWindowsUpdate -Force
 # PSWindowsUpdate module to automate the installation of Windows updates. Learn more about
 # the PSWindowsUpdate module at: https://www.powershellgallery.com/packages/PSWindowsUpdate/
 
-
-
-
-# Run Get-WindowsUpdate to retrieve avaialable updates
+# Run Get-WindowsUpdate to retrieve available updates
 $availableUpdates = Get-WindowsUpdate
-
-#error warning the version * of module PSWINDOWSUPDATE is currently in use. 
-# Retry the operation after closing the applications:
 
 # Check if there are KB Article IDs available to download and install
 if ($availableUpdates.Count -eq 0) {
@@ -82,7 +80,7 @@ if ($availableUpdates.Count -eq 0) {
         Write-Host $output
     }
 
-    #Extract KB Article Ids from the output
+    # Extract KB Article Ids from the output
     $KBArticleIDs = $availableUpdates.KBArticleID
 
     # Confirm with the user if they want to install the updates
