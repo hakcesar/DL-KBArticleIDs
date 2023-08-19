@@ -68,6 +68,8 @@ Import-Module PSWindowsUpdate -Force
 # Run Get-WindowsUpdate to retrieve avaialable updates
 $availableUpdates = Get-WindowsUpdate
 
+#error warning the version * of module PSWINDOWSUPDATE is currently in use. 
+# Retry the operation after closing the applications:
 
 # Check if there are KB Article IDs available to download and install
 if ($availableUpdates.Count -eq 0) {
@@ -76,7 +78,7 @@ if ($availableUpdates.Count -eq 0) {
     Write-Host "The following KBArticleID(s) are available:"
     $availableUpdates | ForEach-Object {
         $output = "$($_.Title) (KB$($_.KBArticleID))"
-        $output = $output -replace "KB(\d+)", "$(Write-Host ('KB$1') -ForegroundColor Yellow)"
+        $output = $output -replace "KB(\d+)", {"$(Write-Host ('KB' + $Matches[1]) -ForegroundColor Yellow)"}
         Write-Host $output
     }
 
