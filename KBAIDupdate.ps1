@@ -65,31 +65,41 @@ Import-Module PSWindowsUpdate -Force
 # PSWindowsUpdate module to automate the installation of Windows updates. Learn more about
 # the PSWindowsUpdate module at: https://www.powershellgallery.com/packages/PSWindowsUpdate/
 
-# Run Get-WindowsUpdate to retrieve available updates
+# Get a list of all available updates
 $availableUpdates = Get-WindowsUpdate
 
-# Check if there are KB Article IDs available to download and install
+# If there are no updates available, exit
 if ($availableUpdates.Count -eq 0) {
-    Write-Host "No KBArticleID(s) are available to download."
-} else {
-    $requiredUpdates = $availableUpdates | Where-Object -FilterScript {$_.InstallRequired -eq $true}
-    $KBArticleIDs = $requiredUpdates.KBArticleID
-
-    Write-Host "The following KBArticleID(s) are required to be installed:"
-    foreach ($KBArticleID in $KBArticleIDs) {
-        Write-Host "$KBArticleID"
-    }
-
-    $installChoice = Read-Host "Do you want to install these KBArticleIDs? (Y/N)"
-    if ($installChoice -eq "Y") {
-        Write-Host "Installing KBArticleID(s)..."
-        $requiredUpdates | ForEach-Object {
-            Install-WindowsUpdate -KBArticleID $_ -AcceptAll
-        }
-        Write-Host "KBArticleID(s) installed."
-    } else {
-        Write-Host "KBArticleID(s) were not installed."
-    }
+    Write-Host "No updates available."
+    exit
 }
 
+# Get a list of all updates that have a KBArticleID
+$KBArticleIDUpdates = $availableUpdates | Where-Object {$_.KBArticleID -ne $null}
+
+# If there are no updates with a KBArticleID, exit
+if ($KBArticleIDUpdates.Count -eq 0) {
+    Write-Host "No updates with KBArticleIDs available."
+    exit
+}
+
+# Output all available KBArticleIDs to the user
+Write-Host "The following updates are available with KBArticleIDs:"
+foreach ($KBArticleIDUpdate in $KBArticleIDUpdates) {
+    Write-Host "$KBArticleIDUpdate.Title (KB$KBArticleIDUpdate.KBArticleID)"
+}
+
+# Prompt the user to agree before downloading the updates
+$installChoice = Read-Host "Do you want to download these updates? (Y/N)"
+
+# If the user agrees, download the updates
+if ($installChoice -eq "Y") {
+    Write-Host "Downloading updates..."
+    $KBArticleIDUpdates | ForEach-Object {
+        Install-WindowsUpdate -KBArticleID $_ -AcceptAll
+    }
+    Write-Host "Updates downloaded."
+} else {
+    Write-Host "Updates were not downloaded."
+}
 
