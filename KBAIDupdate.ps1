@@ -75,8 +75,11 @@ if ($availableUpdates.Count -eq 0) {
 } else {
     Write-Host "The following KBArticleID(s) are available:"
     $availableUpdates | ForEach-Object {
-        $output = "$($_.Title) (KB$($_.KBArticleID))"
-        $output = $output -replace "KB(\d+)", "$(Write-Host ('KB' + $Matches[1]) -ForegroundColor Yellow)"
+        $output = "$($_.Title) "
+        if ($_.KBArticleID) {
+            $output += "(KB$($_.KBArticleID))"
+            $output = $output -replace "KB(\d+)", "$(Write-Host ('KB' + $Matches[1]) -ForegroundColor Yellow)"
+        }
         Write-Host $output
     }
 
