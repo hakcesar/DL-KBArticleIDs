@@ -1,4 +1,13 @@
-# DL-KBArticleIDs
+# 
+
+  _  ______    _   _ ____  ____    _  _____ _____ 
+ | |/ / __ )  | | | |  _ \|  _ \  / \|_   _| ____|
+ | ' /|  _ \  | | | | |_) | | | |/ _ \ | | |  _|  
+ | . \| |_) | | |_| |  __/| |_| / ___ \| | | |___ 
+ |_|\_\____/   \___/|_|   |____/_/   \_\_| |_____|
+                                                  
+
+
 Discover an automated PowerShell script designed to streamline Windows update installations.
 Before utilizing this script, exercise extreme caution and thoroughly review its code, as it performs critical system operations. 
 The script mandates administrator privileges and ensures the 'PSWindowsUpdate' module is updated before listing available updates. 
