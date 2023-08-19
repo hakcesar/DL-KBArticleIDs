@@ -70,17 +70,16 @@ $avaialableUpdates = Get-WindowsUpdate
 
 
 # Check if there are KB Article IDs available to download and install
-if ($avaialableUpdates.Count -eq 0) {
+if ($availableUpdates.Count -eq 0) {
     Write-Host "No KBArticleID(s) are available to download."
 } else {
     Write-Host "The following KBArticleID(s) are available:"
     $availableUpdates | ForEach-Object {
         $output = "$($_.Title) (KB$($_.KBArticleID))"
-        $output = $output -replace "(KB\d+)", "$(Write-Host '$1' -ForegroundColor Yellow)"
+        $output = $output -replace "KB(\d+)", "$(Write-Host ('KB' + $Matches[1]) -ForegroundColor Yellow)"
         Write-Host $output
     }
 
-    
     #Extract KB Article Ids from the output
     $KBArticleIDs = $avaialableUpdates.KBArticleID
 
