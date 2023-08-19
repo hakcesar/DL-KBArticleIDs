@@ -69,12 +69,13 @@ Import-Module PSWindowsUpdate -Force
 $availableUpdates = Get-WindowsUpdate
 
 # Check if there are KB Article IDs available to download and install
+
 if ($availableUpdates.Count -eq 0) {
     Write-Host "No KBArticleID(s) are available to download."
 } else {
     Write-Host "The following KBArticleID(s) are available:"
-    foreach ($update in $availableUpdates) {
-        Write-Host -ForegroundColor Yellow "$update.Title (KB$update.KBArticleID)"
+    $availableUpdates | ForEach-Object {
+        Write-Host -ForegroundColor Yellow "$($_.Title) (KB$($_.KBArticleID))"
     }
     
 
