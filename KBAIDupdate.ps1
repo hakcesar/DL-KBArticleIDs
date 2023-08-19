@@ -73,9 +73,9 @@ $availableUpdates = Get-WindowsUpdate
 if ($availableUpdates.Count -eq 0) {
     Write-Host "No KBArticleID(s) are available to download."
 } else {
-    Write-Host "The following KBArticleID(s) are available:"
+    Write-Host "Computer Name, Status, KB, Size, Title"
     $availableUpdates | ForEach-Object {
-        Write-Host -ForegroundColor Yellow "(KB$($_.KBArticleID))"
+        Write-Host "$($_.ComputerName), $($_.Status), KB$($_.KBArticleID).Format-Number(0), $($_.Size), $($_.Title)"
     }
     
 
