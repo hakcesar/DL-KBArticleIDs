@@ -87,7 +87,7 @@ if ($availableUpdates.Count -eq 0) {
     $KBArticleIDs = $availableUpdates.KBArticleID
 
     # Confirm with the user if they want to install the updates
-    $installChoice = Read-Host "Do you wnt to install these KBArticleIDs? (Y/N)"
+    $installChoice = Read-Host "Do you want to install these KBArticleIDs? (Y/N)"
     if ($installChoice -eq "Y") {
         Write-Host "Installing KBArticleID(s)..."
         $KBArticleIDs | ForEach-Object {
@@ -96,9 +96,8 @@ if ($availableUpdates.Count -eq 0) {
         }
         Write-Host "KBArticleID(s) installed."
     } else {
-        Write-Host "KBArticleID(s) were not installed"
+        Write-Host "KBArticleID(s) were not installed."
     }
-
 }
 
 
