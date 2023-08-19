@@ -44,10 +44,9 @@ if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     exit
 }
 
-# Install or update the PSWindowsUpdate module
-Write-Host "Installing/Updating PSWindowsUpdate module and NuGet package provider..."
-Install-PackageProvider -Name NuGet -Force
-
+Write-Host "Installing/Updating PSWindowsUpdate module and NuGet package manager..."
+Write-Host " "
+Write-Host "Installing/Updating NuGet packge manager..."
 # Install the NuGet package provider
 Install-PackageProvider -Name NuGet -Force
 # NuGet is a package manager for software libraries used in various programming languages, 
@@ -74,11 +73,15 @@ if ($availableUpdates.Count -eq 0) {
     Write-Host "No KBArticleID(s) are available to download."
 } else {
     Write-Host "The following KBArticleID(s) are available:"
-
+    
     $colorizedOutput = $availableUpdates | ForEach-Object {
-        $kbArticleID = "KB$($_.KBArticleID)" -replace "KB(\d+)", { Write-Host ("KB" + $matches[1]) -ForegroundColor Yellow -NoNewline; return ("KB" + $matches[1]) }
-        "$($_.Title) ($kbArticleID)"
+        $output = "$($_.Title) (KB$($_.KBArticleID))"
+        $output = $output -replace "KB(\d+)", { Write-Host ("KB" + $matches[1]) -ForegroundColor Yellow -NoNewline; return ("KB" + $matches[1]) }
+        
+        Write-Host -NoNewline ($output + " ")
     }
+
+    Write-Host ""  # Add a new line after the colorized output
 
     Write-Host $colorizedOutput
 
