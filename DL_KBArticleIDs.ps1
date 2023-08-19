@@ -1,8 +1,20 @@
 # Check if the user is running the script as administrator
 
-if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    Write-Host "Please run this script as an administrator"
-    Exit
+$isAdmin = ([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544"
+if (-not $isAdmin) {
+    Write-Host "This script requires administrative privileges. Please run the script as an administrator."
+    
+    # Prompt user for admin credentials
+    $credentials = Get-Credential 
+
+    # Check if the provided credential have adminsitrative privileges
+    $isAdmin = $credentials.GetNetworkCredential().Password | ConvertTo-SecureString | `
+        (New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ($credentials.UserName, $_)).GetNetworkCredential().Password -match "S-1-5-32-544"
+
+    if (-not $isAdmin) {
+        Write-Host "The provided credentials do not have administrative privileges."
+        Exit
+    }
 }
 
 # Install or update the PSWindowsUpdate module
@@ -16,7 +28,7 @@ $avaialableUpdates = Get-WindowsUpdate
 
 
 # Check if there are KB Article IDs available to download and install
-if ($avaialableUpdates.Count) -eq 0 {
+if ($avaialableUpdates.Count -eq 0) {
     Write-Host "No KBArticleID(s) are available to download."
 } else {
     Write-Host "The following KBArticleID(s) are available:"
@@ -39,7 +51,6 @@ if ($avaialableUpdates.Count) -eq 0 {
     } else {
         Write-Host "KBArticleID(s) were not installed"
     }
-
 
 }
 
