@@ -78,7 +78,7 @@ if ($availableUpdates.Count -eq 0) {
         $output = "$($_.Title) "
         if ($_.KBArticleID) {
             $output += "(KB$($_.KBArticleID))"
-            $output = $output -replace "KB(\d+)", "$(Write-Host ('KB$1') -ForegroundColor Yellow)"
+            $output = $output -replace "KB(\d+)", "$(Write-Host ('KB' + $Matches[1]) -ForegroundColor Yellow)"
         }
         Write-Host $output
     }
