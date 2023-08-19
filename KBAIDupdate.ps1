@@ -68,42 +68,28 @@ Import-Module PSWindowsUpdate -Force
 # Get a list of all available updates
 $availableUpdates = Get-WindowsUpdate
 
-# If there are no updates available, exit
+# Check if there are KB Article IDs available to download and install
 if ($availableUpdates.Count -eq 0) {
-    Write-Host "No updates available."
-    exit
-}
-
-# Get a list of all updates that have a KBArticleID
-$KBArticleIDUpdates = $availableUpdates | Where-Object {$_.KBArticleID -ne $null}
-
-# If there are no updates with a KBArticleID, exit
-if ($KBArticleIDUpdates.Count -eq 0) {
-    Write-Host "No updates with KBArticleIDs available."
-    exit
-}
-
-# Convert the $KBArticleIDUpdates variable to a list of strings
-$KBArticleIDs = $KBArticleIDUpdates.KBArticleID | ForEach-Object {$_.ToString()}
-
-# Output all available KBArticleIDs to the user
-Write-Host "The following updates are available with KBArticleIDs:"
-foreach ($KBArticleID in $KBArticleIDs) {
-    Write-Host "$KBArticleID"
-}
-
-# Prompt the user to agree before downloading the updates
-$installChoice = Read-Host "Do you want to download these updates? (Y/N)"
-
-# If the user agrees, download the updates
-if ($installChoice -eq "Y") {
-    Write-Host "Downloading updates..."
-    $KBArticleIDs | ForEach-Object {
-        Install-WindowsUpdate -KBArticleID $_ -AcceptAll
-    }
-    Write-Host "Updates downloaded."
+    Write-Host "No KBArticleID(s) are available to download."
 } else {
-    Write-Host "Updates were not downloaded."
+    $updateTable = $availableUpdates | Select-Object ComputerName, Status, @{Name='KB'; Expression={"KB$($_.KBArticleID)"}}, Size, @{Name='Title'; Expression={$_.Title -replace '^(.{200}).*$', '$1...'}}
+    $updateTable | Format-Table -AutoSize
+
+    # Extract KB Article Ids from the output
+    $KBArticleIDs = $availableUpdates.KBArticleID
+
+    # Confirm with the user if they want to install the updates
+    $installChoice = Read-Host "Do you want to install these KBArticleIDs? (Y/N)"
+    if ($installChoice -eq "Y") {
+        Write-Host "Installing KBArticleID(s)..."
+        $KBArticleIDs | ForEach-Object {
+            Install-WindowsUpdate -KBArticleID $_ -AcceptAll
+            Write-Host "Installed KB$_"
+        }
+        Write-Host "KBArticleID(s) installed."
+    } else {
+        Write-Host "KBArticleID(s) were not installed."
+    }
 }
 
 
