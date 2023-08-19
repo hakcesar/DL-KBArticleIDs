@@ -72,19 +72,19 @@ $availableUpdates = Get-WindowsUpdate
 if ($availableUpdates.Count -eq 0) {
     Write-Host "No KBArticleID(s) are available to download."
 } else {
-    $updateTable = $availableUpdates | Where-Object -FilterScript {$_.InstallRequired -eq $true} | Select-Object -Property KBArticleID, Title
-    $updateTable | Format-Table -AutoSize -TableHeaders @{Name="KB"; Align="Left"},{Name="Title"; Align="Left"}
+    $requiredUpdates = $availableUpdates | Where-Object -FilterScript {$_.InstallRequired -eq $true}
+    $KBArticleIDs = $requiredUpdates.KBArticleID
 
-    # Extract KB Article Ids from the output
-    $KBArticleIDs = $availableUpdates.KBArticleID
+    Write-Host "The following KBArticleID(s) are required to be installed:"
+    foreach ($KBArticleID in $KBArticleIDs) {
+        Write-Host "$KBArticleID"
+    }
 
-    # Confirm with the user if they want to install the updates
     $installChoice = Read-Host "Do you want to install these KBArticleIDs? (Y/N)"
     if ($installChoice -eq "Y") {
         Write-Host "Installing KBArticleID(s)..."
-        $KBArticleIDs | ForEach-Object {
+        $requiredUpdates | ForEach-Object {
             Install-WindowsUpdate -KBArticleID $_ -AcceptAll
-            Write-Host "Installed KB$_"
         }
         Write-Host "KBArticleID(s) installed."
     } else {
