@@ -73,10 +73,9 @@ $availableUpdates = Get-WindowsUpdate
 if ($availableUpdates.Count -eq 0) {
     Write-Host "No KBArticleID(s) are available to download."
 } else {
-    Write-Host "Computer Name, Status, KB, Size, Title"
-    $availableUpdates | ForEach-Object {
-        Write-Host "$($_.ComputerName), $($_.Status), KB$($_.KBArticleID).Format-Number(0), $($_.Size), $($_.Title)"
-    }
+    $updateTable = $availableUpdates | Select-Object ComputerName, Status, @{Name='KB'; Expression={"KB$($_.KBArticleID)"}}, Size, Title
+    $updateTable | Format-Table -AutoSize
+    
     
 
     # Extract KB Article Ids from the output
