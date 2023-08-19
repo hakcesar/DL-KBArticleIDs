@@ -1,19 +1,10 @@
 # Check if the user is running the script as administrator
 
 $isAdmin = ([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544"
-if (-not $isAdmin) {
-    Write-Host "This script requires administrative privileges. Please run the script as an administrator."
-    
+if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     # Prompt user for admin credentials
-    $credentials = Get-Credential 
-
-    # Check if the provided credential have adminsitrative privileges
-     $isAdmin = [System.Security.Principal.WindowsPrincipal]::new($credentials).IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator)
-
-    if (-not $isAdmin) {
-        Write-Host "The provided credentials do not have administrative privileges."
-        Exit
-    }
+    Start-Process powershell.exe "-File", ('"{0}"' -f $MyInvocation.MyCommand.Path) -Verb RunAs -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
+    exit
 }
 
 # Install or update the PSWindowsUpdate module
