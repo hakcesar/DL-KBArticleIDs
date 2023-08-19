@@ -74,10 +74,10 @@ if ($availableUpdates.Count -eq 0) {
     Write-Host "No KBArticleID(s) are available to download."
 } else {
     Write-Host "The following KBArticleID(s) are available:"
-    
     $availableUpdates | ForEach-Object {
-        $kbArticleID = "KB$($_.KBArticleID)" -replace "KB(\d+)", { Write-Host ("KB" + $matches[1]) -ForegroundColor Yellow; return $matches[0] }
-        Write-Host "$($_.Title) ($kbArticleID)"
+        $output = "$($_.Title) (KB$($_.KBArticleID))"
+        $output = $output -replace "(KB\d+)", "$(Write-Host ('KB$($_.KBArticleID') -ForegroundColor Yellow)"
+        Write-Host $output
     }
 
     # Extract KB Article Ids from the output
