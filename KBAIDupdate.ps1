@@ -44,11 +44,12 @@ if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     exit
 }
 
-Write-Host "Installing/Updating PSWindowsUpdate module and NuGet package manager..."
+Write-Host "Install or Update PSWindowsUpdate module and NuGet package manager..."
 Write-Host " "
-Write-Host "Installing/Updating NuGet packge manager..."
+Write-Host "Installing/Updating NuGet package manager..."
 # Install the NuGet package provider
 Install-PackageProvider -Name NuGet -Force
+Write-Host " "
 # NuGet is a package manager for software libraries used in various programming languages, 
 # including PowerShell. It allows you to easily discover, install, and manage libraries,
 # modules, and tools needed for development and automation. In this script, we're using the
@@ -73,10 +74,10 @@ if ($availableUpdates.Count -eq 0) {
     Write-Host "No KBArticleID(s) are available to download."
 } else {
     Write-Host "The following KBArticleID(s) are available:"
+    
     $availableUpdates | ForEach-Object {
-        $output = "$($_.Title) (KB$($_.KBArticleID))"
-        $output = $output -replace "(KB\d+)", "$(Write-Host ('$1') -ForegroundColor Yellow)"
-        Write-Host $output
+        $kbArticleID = "KB$($_.KBArticleID)" -replace "KB(\d+)", { Write-Host ("KB" + $matches[1]) -ForegroundColor Yellow; return $matches[0] }
+        Write-Host "$($_.Title) ($kbArticleID)"
     }
 
     # Extract KB Article Ids from the output
