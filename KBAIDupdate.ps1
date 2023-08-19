@@ -83,10 +83,13 @@ if ($KBArticleIDUpdates.Count -eq 0) {
     exit
 }
 
+# Convert the $KBArticleIDUpdates variable to a list of strings
+$KBArticleIDs = $KBArticleIDUpdates.KBArticleID | ForEach-Object {$_.ToString()}
+
 # Output all available KBArticleIDs to the user
 Write-Host "The following updates are available with KBArticleIDs:"
-foreach ($KBArticleIDUpdate in $KBArticleIDUpdates) {
-    Write-Host "$KBArticleIDUpdate.Title (KB$KBArticleIDUpdate.KBArticleID)"
+foreach ($KBArticleID in $KBArticleIDs) {
+    Write-Host "$KBArticleID"
 }
 
 # Prompt the user to agree before downloading the updates
@@ -95,11 +98,12 @@ $installChoice = Read-Host "Do you want to download these updates? (Y/N)"
 # If the user agrees, download the updates
 if ($installChoice -eq "Y") {
     Write-Host "Downloading updates..."
-    $KBArticleIDUpdates | ForEach-Object {
+    $KBArticleIDs | ForEach-Object {
         Install-WindowsUpdate -KBArticleID $_ -AcceptAll
     }
     Write-Host "Updates downloaded."
 } else {
     Write-Host "Updates were not downloaded."
 }
+
 
