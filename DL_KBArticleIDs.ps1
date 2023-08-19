@@ -1,3 +1,41 @@
+# KBAID UPDATE - PowerShell version 1.0
+
+# Set console colors
+$Host.UI.RawUI.BackgroundColor = "Black"
+$Host.UI.RawUI.ForegroundColor = "White"
+Clear-Host
+
+# Hi :)
+$asciiArt = @"
+
+
+
+
+
+
+  _  ______    _    ___ ____     _   _ ____  ____    _  _____ _____ 
+ | |/ / __ )  / \  |_ _|  _ \   | | | |  _ \|  _ \  / \|_   _| ____|
+ | ' /|  _ \ / _ \  | || | | |  | | | | |_) | | | |/ _ \ | | |  _|  
+ | . \| |_) / ___ \ | || |_| |  | |_| |  __/| |_| / ___ \| | | |___ 
+ |_|\_\____/_/   \_\___|____/    \___/|_|   |____/_/   \_\_| |_____|
+                                                                    
+
+
+                                                                        
+
+
+                                                                 
+
+                                                                
+                                
+"@
+Write-Host $asciiArt
+Write-Host "Author: hakcesar"
+Write-Host "Blog: https://hakcesar.com"
+Write-Host ""
+
+
+
 # Check if the user is running the script as administrator
 
 $isAdmin = ([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544"
