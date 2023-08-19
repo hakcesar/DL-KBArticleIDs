@@ -1,4 +1,4 @@
-# KB UPDATE
+# KBAID UPDATE
 
 
 Discover an automated PowerShell script designed to streamline Windows update installations.
