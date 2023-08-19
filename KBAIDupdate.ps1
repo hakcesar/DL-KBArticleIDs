@@ -66,7 +66,7 @@ Import-Module PSWindowsUpdate -Force
 
 
 # Run Get-WindowsUpdate to retrieve avaialable updates
-$avaialableUpdates = Get-WindowsUpdate
+$availableUpdates = Get-WindowsUpdate
 
 
 # Check if there are KB Article IDs available to download and install
@@ -81,7 +81,7 @@ if ($availableUpdates.Count -eq 0) {
     }
 
     #Extract KB Article Ids from the output
-    $KBArticleIDs = $avaialableUpdates.KBArticleID
+    $KBArticleIDs = $availableUpdates.KBArticleID
 
     # Confirm with the user if they want to install the updates
     $installChoice = Read-Host "Do you wnt to install these KBArticleIDs? (Y/N)"
