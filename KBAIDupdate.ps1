@@ -44,7 +44,6 @@ if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     exit
 }
 
-Write-Host "Install or Update PSWindowsUpdate module and NuGet package manager..."
 Write-Host " "
 Write-Host "Installing/Updating NuGet package manager..."
 # Install the NuGet package provider
@@ -76,7 +75,7 @@ if ($availableUpdates.Count -eq 0) {
     Write-Host "The following KBArticleID(s) are available:"
     $availableUpdates | ForEach-Object {
         $output = "$($_.Title) (KB$($_.KBArticleID))"
-        $output = $output -replace "KB(\d+)", { Write-Host ("KB" + $matches[1]) -ForegroundColor Yellow; return ("KB" + $matches[1]) }
+        $output = $output -replace "KB(\d+)", { Write-Host ("KB" + $matches[1]) -ForegroundColor Yellow; return $matches[0] }
         Write-Host $output
     }
 
