@@ -8,9 +8,23 @@ if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 }
 
 # Install or update the PSWindowsUpdate module
-Write-Host "Installing/Updating PSWindowsUpdate module..."
+Write-Host "Installing/Updating PSWindowsUpdate module and NuGet package provider..."
+Install-PackageProvider -Name NuGet -Force
+# NuGet is a package manager for software libraries used in various programming languages, 
+# including PowerShell. It allows you to easily discover, install, and manage libraries,
+# modules, and tools needed for development and automation. In this script, we're using the
+# NuGet package provider to manage the installation of the PSWindowsUpdate module.
+# Learn more about NuGet at: https://www.nuget.org/
+
 Install-Module PSWindowsUpdate -Force
 Import-Module PSWindowsUpdate -Force
+# The PSWindowsUpdate module is a PowerShell module that provides cmdlets to interact
+# with the Windows Update service on Windows systems. It allows you to manage and install
+# Windows updates from PowerShell scripts and commands. In this script, we're using the
+# PSWindowsUpdate module to automate the installation of Windows updates. Learn more about
+# the PSWindowsUpdate module at: https://www.powershellgallery.com/packages/PSWindowsUpdate/
+
+
 
 
 # Run Get-WindowsUpdate to retrieve avaialable updates
