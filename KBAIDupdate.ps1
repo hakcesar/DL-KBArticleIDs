@@ -75,6 +75,15 @@ if ($availableUpdates.Count -eq 0) {
     $updateTable = $availableUpdates | Select-Object ComputerName, Status, @{Name='KB'; Expression={"KB$($_.KBArticleID)"}}, Size, @{Name='Title'; Expression={$_.Title -replace '^(.{200}).*$', '$1...'}}
     $updateTable | Format-Table -AutoSize
 
+# different output
+# if ($availableUpdates.Count -eq 0) {
+#    Write-Host "No KBArticleID(s) are available to download."
+# } else {
+#    Write-Host "The following KBArticleID(s) are available:"
+#    $availableUpdates | ForEach-Object {
+#        Write-Host -ForegroundColor Yellow "$($_.Title) (KB$($_.KBArticleID))"
+#    }
+
     # Extract KB Article Ids from the output
     $KBArticleIDs = $availableUpdates.KBArticleID
 
