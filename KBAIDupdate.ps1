@@ -90,8 +90,8 @@ if ($availableUpdates.Count -eq 0) {
 }
 
 
-# Prompt the user to select an update
-Write-Host "Please select a KB update to download and install:"
+# Prompt the user to enter an update
+Write-Host "Please enter a KB update to download and install:"
 $selectedUpdate = Read-Host
 
 # Download and install the selected update
