@@ -2,7 +2,6 @@
 
 # Set console colors
 $Host.UI.RawUI.BackgroundColor = "Black"
-$Host.UI.RawUI.ForegroundColor = "White"
 Clear-Host
 
 # Hi :)
@@ -34,71 +33,53 @@ Write-Host "Author: hakcesar"
 Write-Host "Blog: https://hakcesar.com"
 Write-Host ""
 
+# Check if the user has administrative privileges
+$currentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent()
+$principal = New-Object System.Security.Principal.WindowsPrincipal($currentUser)
+$isAdmin = $principal.IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator)
 
-# Check if the user is running the script as administrator
+if (-not $isAdmin) {
+    Write-Host "Requesting administrative privileges..."
 
-$isAdmin = ([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544"
-if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    # Prompt user for admin credentials
-    Start-Process powershell.exe "-File", ('"{0}"' -f $MyInvocation.MyCommand.Path) -Verb RunAs -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
+    # Start a new instance of PowerShell with elevated privileges
+    $params = @{
+        FilePath = "powershell.exe"
+        ArgumentList = "-NoProfile -ExecutionPolicy Bypass -File `"$($MyInvocation.MyCommand.Path)`""
+        Verb = "RunAs"
+        PassThru = $true
+    }
+    $process = Start-Process @params
+
+    if ($process) {
+        Write-Host "Elevated process started."
+    } else {
+        Write-Host "Failed to start elevated process."
+    }
+
     exit
 }
 
-Write-Host " "
-Write-Host "Installing/Updating NuGet package manager..."
-# Install the NuGet package provider
+
+# Install NuGet using PackageManagement
 Install-PackageProvider -Name NuGet -Force
-Write-Host " "
-# NuGet is a package manager for software libraries used in various programming languages, 
-# including PowerShell. It allows you to easily discover, install, and manage libraries,
-# modules, and tools needed for development and automation. In this script, we're using the
-# NuGet package provider to manage the installation of the PSWindowsUpdate module.
-# Learn more about NuGet at: https://www.nuget.org/
+Write-Host "NuGet provider installed."
 
-# Install or update the PSWindowsUpdate module
-Write-Host "Installing/Updating PSWindowsUpdate module..."
-Install-Module PSWindowsUpdate -Force
-Import-Module PSWindowsUpdate -Force
-# The PSWindowsUpdate module is a PowerShell module that provides cmdlets to interact
-# with the Windows Update service on Windows systems. It allows you to manage and install
-# Windows updates from PowerShell scripts and commands. In this script, we're using the
-# PSWindowsUpdate module to automate the installation of Windows updates. Learn more about
-# the PSWindowsUpdate module at: https://www.powershellgallery.com/packages/PSWindowsUpdate/
+# Install PSWindowsUpdate module using NuGet provider
+Install-Module -Name PSWindowsUpdate -Force
+Write-Host "PSWindowsUpdate module installed."
 
-# Get a list of all available updates
-$availableUpdates = Get-WindowsUpdate
+# Import PSWindowsUpdate module
+Import-Module PSWindowsUpdate
 
-# Check if there are KB Article IDs available to download and install
-if ($availableUpdates.Count -eq 0) {
-    Write-Host "No KBArticleID(s) are available to download."
-} else {
-    $updateTable = $availableUpdates | Select-Object ComputerName, Status, @{Name='KB'; Expression={"KB$($_.KBArticleID)"}}, Size, @{Name='Title'; Expression={$_.Title -replace '^(.{200}).*$', '$1...'}}
-    $updateTable | Format-Table -AutoSize
+# Request available updates
+Get-WUList | Format-Table ComputerName, Status, KB, Size, Title
 
-# different output
-# if ($availableUpdates.Count -eq 0) {
-#    Write-Host "No KBArticleID(s) are available to download."
-# } else {
-#    Write-Host "The following KBArticleID(s) are available:"
-#    $availableUpdates | ForEach-Object {
-#        Write-Host -ForegroundColor Yellow "$($_.Title) (KB$($_.KBArticleID))"
-#    }
+# Get the list of available updates
+$updates = Get-WUList
 
-    # Extract KB Article Ids from the output
-    $KBArticleIDs = $availableUpdates.KBArticleID
+# Prompt the user to select an update
+Write-Host "Please select an update to download and install:"
+$selectedUpdate = Read-Host
 
-    # Confirm with the user if they want to install the updates
-    $installChoice = Read-Host "Do you want to install these KBArticleIDs? (Y/N)"
-    if ($installChoice -eq "Y") {
-        Write-Host "Installing KBArticleID(s)..."
-        $KBArticleIDs | ForEach-Object {
-            Install-WindowsUpdate -KBArticleID $_ -AcceptAll
-            Write-Host "Installed KB$_"
-        }
-        Write-Host "KBArticleID(s) installed."
-    } else {
-        Write-Host "KBArticleID(s) were not installed."
-    }
-}
-
-
+# Download and install the selected update
+Install-WUUpdate -KBArticleID $selectedUpdate
