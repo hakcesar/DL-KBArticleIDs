@@ -86,8 +86,8 @@ Get-WindowsUpdate | Format-Table ComputerName, Status, KB, Size, Title
 # Get the list of available updates
 $updates = Get-WindowsUpdate
 
-# Prompt the user to select an update
-Write-Host "Please select a KB update to download and install:"
+# Prompt the user to enter a KB#
+Write-Host "Please enter a KB# to download and install, add a comma for multiple KB#s:"
 $selectedUpdate = Read-Host
 
 # Download and install the selected update
