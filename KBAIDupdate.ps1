@@ -81,13 +81,17 @@ Import-Module PSWindowsUpdate
 # Request available updates
 Write-Host " "
 Write-Host "Fetching available updates..."
-Get-WindowsUpdate | Format-Table ComputerName, Status, KB, Size, Title
+$availableUpdates = Get-WindowsUpdate
+if ($availableUpdates.Count -eq 0) {
+    Write-Host "No updates are available to download."
+    return  # Exit the script
+} else {
+    $availableUpdates | Format-Table ComputerName, Status, KB, Size, Title
+}
 
-# Get the list of available updates
-$updates = Get-WindowsUpdate
 
-# Prompt the user to enter a KB#
-Write-Host "Please enter a KB# to download and install, for multiple KB#s, add a comma and a space:"
+# Prompt the user to select an update
+Write-Host "Please select a KB update to download and install:"
 $selectedUpdate = Read-Host
 
 # Download and install the selected update
@@ -97,7 +101,7 @@ Get-WindowsUpdate -Install -AcceptAll -KBArticleID $selectedUpdate -ErrorAction 
 
 # Prompt the user to restart the system
 Write-Host " "
-$restart = Read-Host "Do you want to restart your system now? (y/n)"
+$restart = Read-Host "Reboot is required. Do it now? (y/n)"
 
 if ($restart -eq "y") {
 
