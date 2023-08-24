@@ -60,26 +60,51 @@ if (-not $isAdmin) {
 }
 
 
-# Install NuGet using PackageManagement
+# Install NuGet using PackageManagement and check for latest version
+# NuGet is a package manager for software libraries in multiple languages, including PowerShell. 
+# It simplifies library installation, management, and tools for development and automation. This script employs NuGet to install the PSWindowsUpdate module. 
+# Learn more: https://www.nuget.org/
 Install-PackageProvider -Name NuGet -Force
+Write-Host " "
 Write-Host "NuGet provider installed."
+Write-Host " "
 
-# Install PSWindowsUpdate module using NuGet provider
-Install-Module -Name PSWindowsUpdate -Force
+# Install PSWindowsUpdate module using NuGet provider and check for lateset version
+# The PSWindowsUpdate module is a PowerShell module for Windows Update management. It offers cmdlets to handle updates via PowerShell. 
+# This script automates Windows update installation using the PSWindowsUpdate module. Learn more: https://www.powershellgallery.com/packages/PSWindowsUpdate/
+Install-Module -Name PSWindowsUpdate -Force -WarningAction SilentlyContinue
 Write-Host "PSWindowsUpdate module installed."
 
 # Import PSWindowsUpdate module
 Import-Module PSWindowsUpdate
 
 # Request available updates
-Get-WUList | Format-Table ComputerName, Status, KB, Size, Title
+Write-Host " "
+Write-Host "Fetching available updates..."
+Get-WindowsUpdate | Format-Table ComputerName, Status, KB, Size, Title
 
 # Get the list of available updates
-$updates = Get-WUList
+$updates = Get-WindowsUpdate
 
 # Prompt the user to select an update
-Write-Host "Please select an update to download and install:"
+Write-Host "Please select a KB update to download and install:"
 $selectedUpdate = Read-Host
 
 # Download and install the selected update
-Install-WUUpdate -KBArticleID $selectedUpdate
+Write-Host " "
+Write-Host "Installing $selectedUpdate..."
+Get-WindowsUpdate -Install -AcceptAll -KBArticleID $selectedUpdate
+
+# Prompt the user to restart the system
+Write-Host " "
+$restart = Read-Host "Do you want to restart your system now? (y/n)"
+
+if ($restart -eq "y") {
+
+    Restart-Computer
+
+} else {
+
+    Write-Host "Restart the system at your latest convenience to apply the updates."
+
+}
