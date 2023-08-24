@@ -93,7 +93,7 @@ $selectedUpdate = Read-Host
 # Download and install the selected update
 Write-Host " "
 Write-Host "Installing $selectedUpdate..."
-Get-WindowsUpdate -Install -AcceptAll -KBArticleID $selectedUpdate
+Get-WindowsUpdate -Install -AcceptAll -KBArticleID $selectedUpdate -ErrorAction SilentlyContinue
 
 # Prompt the user to restart the system
 Write-Host " "
