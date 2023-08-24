@@ -87,7 +87,7 @@ Get-WindowsUpdate | Format-Table ComputerName, Status, KB, Size, Title
 $updates = Get-WindowsUpdate
 
 # Prompt the user to enter a KB#
-Write-Host "Please enter a KB# to download and install, add a comma for multiple KB#s:"
+Write-Host "Please enter a KB# to download and install, for multiple KB#s, add a comma and a space:"
 $selectedUpdate = Read-Host
 
 # Download and install the selected update
