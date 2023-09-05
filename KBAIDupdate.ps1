@@ -29,8 +29,7 @@ $asciiArt = @"
                                 
 "@
 Write-Host $asciiArt
-Write-Host "Author: hakcesar"
-Write-Host "Blog: https://hakcesar.com"
+Write-Host "By: @hakcesar"
 Write-Host ""
 
 # Check if the user has administrative privileges
